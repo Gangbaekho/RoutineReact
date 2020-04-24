@@ -3,6 +3,16 @@ import axios from 'axios'
 import LandingPageHeader from '../components/Headers/LandingPageHeader'
 import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
 
+import ReactSummernote from 'react-summernote';
+import 'react-summernote/dist/react-summernote.css'; // import styles
+import 'react-summernote/lang/summernote-ru-RU'; // you can import any other locale
+
+// Import bootstrap(v3 or v4) dependencies
+// import 'bootstrap/js/modal';
+// import 'bootstrap/js/dropdown';
+// import 'bootstrap/js/tooltip';
+import 'bootstrap/dist/css/bootstrap.css';
+
 const SummaryForm = (props) => {
 
     // create state for register summary
@@ -40,6 +50,12 @@ const SummaryForm = (props) => {
 
     }
 
+
+
+    const onChange = (content) => {
+        console.log('onChange', content)
+    }
+
     return (
         <div>
             <ExamplesNavbar />
@@ -69,6 +85,24 @@ const SummaryForm = (props) => {
                     onInput={(e) => setFolder(e.target.value)} />
                 <button className="btn btn-success">Submit</button>
             </form>
+            <ReactSummernote
+                value="Default value"
+                options={{
+                    lang: 'ru-RU',
+                    height: 350,
+                    dialogsInBody: true,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview']]
+                    ]
+                }}
+                onChange={this.onChange}
+            />
         </div >
     )
 }

@@ -4,17 +4,21 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.2",
+    "bootstrap": "^4.4.1",
     "moment": "2.24.0",
     "node-sass": "4.13.0",
     "nouislider": "14.0.2",
     "react": "16.8.6",
+    "react-bootstrap": "^1.0.1",
     "react-bootstrap-switch": "15.5.3",
     "react-datetime": "2.16.3",
     "react-dom": "16.8.6",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-scripts": "3.0.1",
+    "react-summernote": "^2.0.0",
     "reactstrap": "8.0.1",
+    "suneditor-react": "^2.10.0",
     "uuid": "^3.1.0"
   },
   "scripts": {
