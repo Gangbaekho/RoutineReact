@@ -68,7 +68,7 @@ function ExamplesNavbar() {
               <DropdownItem header tag="a">
                 Dropdown header
               </DropdownItem>
-              <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+              <DropdownItem href={"/summary/" + sessionStorage.getItem('authenticatedUser') + "/create-summary"}>
                 Create Summary
               </DropdownItem>
               <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>

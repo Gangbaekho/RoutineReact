@@ -42,7 +42,12 @@ function IndexHeader() {
               ></img>
             }
             <h1 className="h1-seo">Routine</h1>
-            <h3>Repeat your study for free.</h3>
+            {
+              sessionStorage.getItem('authenticatedUser') === null ?
+                <h2>Welcome Anonymous!</h2> :
+                <h2>Welcome {sessionStorage.getItem('authenticatedUser')}!</h2>
+            }
+            <h3>Repeat what you studied before for free.</h3>
           </div>
           <h6 className="category category-absolute">
             Designed by{" "}

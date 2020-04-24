@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import MyCard from '../../mycomponents/MyCard'
 
 // reactstrap components
@@ -17,11 +17,24 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
+import summaryReducer from '../../reducers/SummaryReducer'
+import summaryContext from '../../context/summaryContext'
+import summaryService from '../../api/SummaryService'
+import { getSummaries } from '../../actions/SummaryActions'
+import axios from 'axios'
+import uuid from 'uuid'
+import SummaryContext from '../../context/summaryContext'
+
 
 function LandingPage() {
+
+  // for summary 
+  const [summaries, dispatch] = useReducer(summaryReducer, [])
+
+
   const [firstFocus, setFirstFocus] = React.useState(false);
   const [lastFocus, setLastFocus] = React.useState(false);
-  React.useEffect(() => {
+  useEffect(() => {
     document.body.classList.add("landing-page");
     document.body.classList.add("sidebar-collapse");
     document.documentElement.classList.remove("nav-open");
@@ -30,6 +43,17 @@ function LandingPage() {
       document.body.classList.remove("sidebar-collapse");
     };
   });
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}`, {
+      headers: {
+        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      }
+    }).then((data) => dispatch(getSummaries(data.data.reverse())))
+      .catch((error) => console.log(error))
+  }, [])
+
+
   return (
     <>
       <ExamplesNavbar />
@@ -257,6 +281,13 @@ function LandingPage() {
         </div>
         <Container>
           <MyCard />
+          <SummaryContext.Provider value={{ summaries, dispatch }}>
+            {
+              summaries.map(summary => (
+                <MyCard key={uuid()} {...summary} />
+              ))
+            }
+          </SummaryContext.Provider>
         </Container>
         <DefaultFooter />
       </div>

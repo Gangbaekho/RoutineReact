@@ -17,7 +17,8 @@
 */
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect, Router } from "react-router-dom";
+import { createBrowserHistory } from 'history';
 
 // styles for this kit
 import "assets/css/bootstrap.min.css";
@@ -32,6 +33,10 @@ import LandingPage from "views/examples/LandingPage.js";
 import ProfilePage from "views/examples/ProfilePage.js";
 import Repeat from 'mycomponents/Repeat'
 import SignUp from 'views/index-sections/SignUp.js'
+import SummaryForm from './mycomponents/SummaryForm'
+import QuestionForm from './mycomponents/QuestionForm'
+
+const history = createBrowserHistory()
 
 ReactDOM.render(
   <BrowserRouter>
@@ -53,6 +58,8 @@ ReactDOM.render(
         <Route path="/repeat" component={LandingPage} />
         <Route path="/signin" render={props => <LoginPage {...props} />} />
         <Route path="/signup" component={SignUp} />
+        <Route path="/summary/:username/create-summary" component={SummaryForm} exact={true} />
+        <Route path="/question/:username/:summaryId" component={QuestionForm} exact={true} />
         <Redirect to="/index" />
         <Redirect from="/" to="/index" />
       </Switch>
