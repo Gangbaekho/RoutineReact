@@ -51,15 +51,25 @@ const SummaryForm = (props) => {
                 Content <input type="text" name="content"
                     placeholder="Content" className="form-control"
                     onInput={(e) => setContent(e.target.value)} />
-                Understanding <input type="number" name="understaning"
-                    placeholder="1~3 number" className="form-control"
-                    onInput={(e) => setUnderstanding(e.target.value)} />
+                {
+                    // Understanding <input type="number" name="understaning"
+                    // placeholder="1~3 number" className="form-control"
+                    // onInput={(e) => setUnderstanding(e.target.value)} />
+                }
+                Understanding
+                <select className="form-control"
+                    onChange={(e) => setUnderstanding(e.target.value)} >
+                    <option selected value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <br />
                 Folder <input type="text" name="folder"
                     placeholder="Folder" className="form-control"
                     onInput={(e) => setFolder(e.target.value)} />
                 <button className="btn btn-success">Submit</button>
             </form>
-        </div>
+        </div >
     )
 }
 

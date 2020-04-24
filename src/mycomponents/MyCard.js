@@ -10,8 +10,15 @@ import {
     Collapse,
     Nav,
     NavItem,
-    NavLink
+    NavLink,
+    ButtonGroup,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    UncontrolledDropdown,
+    Alert
 } from "reactstrap";
+import axios from 'axios'
 
 const MyCard = (props) => {
 
@@ -27,9 +34,62 @@ const MyCard = (props) => {
         }
     };
 
+
+    const handleChangeUnderstanding = (understanding) => {
+
+        const newSummary = {
+            id: props.id,
+            title: props.title,
+            content: props.content,
+            understanding,
+            folder: props.folder,
+            createdate: props.createdate
+        }
+
+        axios.put(
+            `http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/${props.id}`,
+            newSummary,
+            {
+                headers: {
+                    authorization: 'Bearer ' + sessionStorage.getItem('token')
+
+                }
+            }).then(() => {
+                console.log('summary modify success')
+            })
+            .catch('summary modify failed')
+    }
+
     return (
         <div>
             <Card className="text-center">
+                <Alert color={props.understanding !== 1 ? props.understanding === 2 ? 'warning' : 'success' : 'danger'}>
+                    <UncontrolledDropdown className="btn-group">
+                        <DropdownToggle
+                            aria-expanded={false}
+                            aria-haspopup={true}
+                            caret
+                            color="link"
+                            data-toggle="dropdown"
+                            type="button"
+                            className="text-white"
+                        >
+                            {props.understanding !== 1 ? props.understanding === 2 ? 'Normal' : 'Good' : 'Weak'}
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem href="#pablo" onClick={() => handleChangeUnderstanding(1)}>
+                                Weak
+                            </DropdownItem>
+                            <DropdownItem href="#pablo" onClick={e => handleChangeUnderstanding(2)}>
+                                Normal
+                            </DropdownItem>
+                            <DropdownItem href="#pablo" onClick={e => handleChangeUnderstanding(3)}>
+                                Success
+                            </DropdownItem>
+                            <DropdownItem divider />
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </Alert>
                 <CardHeader>
                     <Button color="primary" size="sm"
                         onClick={() => setToggle(true)}>Questions</Button>
