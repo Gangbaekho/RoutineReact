@@ -19,6 +19,8 @@ import {
     Alert
 } from "reactstrap";
 import axios from 'axios'
+import { stateToHTML } from 'draft-js-export-html';
+import { convertFromRaw } from 'draft-js'
 
 const MyCard = (props) => {
 
@@ -33,6 +35,9 @@ const MyCard = (props) => {
             setCollapses([...collapses, collapse]);
         }
     };
+
+    // convert JSON to Html
+    const convertCommentFromJSONToHTML = (text) => { return stateToHTML(convertFromRaw(JSON.parse(text))) }
 
 
     const handleChangeUnderstanding = (understanding) => {
@@ -61,7 +66,7 @@ const MyCard = (props) => {
     }
 
     return (
-        <div>
+        < div >
             <Card className="text-center">
                 <Alert color={props.understanding !== 1 ? props.understanding === 2 ? 'warning' : 'success' : 'danger'}>
                     <UncontrolledDropdown className="btn-group">
@@ -129,14 +134,15 @@ const MyCard = (props) => {
                                     <br />
                                 </div>
                             ))}
-                    {!toggle &&
-                        <div>
-                            <CardTitle tag="h4">{props.title}</CardTitle>
-                            <CardText>
-                                {props.content}
-                            </CardText>
-                        </div>}
                 </CardBody>
+                {!toggle &&
+                    <div style={{ textAlign: 'left', paddingLeft: '30px' }}>
+                        <CardTitle tag="h4" style={{ paddingTop: '0px' }}>{props.title}</CardTitle>
+                        {props.content !== undefined &&
+                            <div dangerouslySetInnerHTML={{ __html: convertCommentFromJSONToHTML(props.content) }}></div>
+                        }
+                    </div>
+                }
             </Card>
         </div >
     )
