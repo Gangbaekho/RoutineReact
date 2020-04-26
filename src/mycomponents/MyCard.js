@@ -20,7 +20,9 @@ import {
 } from "reactstrap";
 import axios from 'axios'
 import { stateToHTML } from 'draft-js-export-html';
-import { convertFromRaw } from 'draft-js'
+import { convertFromRaw, convertToRaw } from 'draft-js'
+import draftToHtml from 'draftjs-to-html';
+import convert from 'htmr';
 
 const MyCard = (props) => {
 
@@ -64,6 +66,7 @@ const MyCard = (props) => {
             })
             .catch('summary modify failed')
     }
+
 
     return (
         < div >
@@ -138,8 +141,10 @@ const MyCard = (props) => {
                 {!toggle &&
                     <div style={{ textAlign: 'left', paddingLeft: '30px' }}>
                         <CardTitle tag="h4" style={{ paddingTop: '0px' }}>{props.title}</CardTitle>
-                        {props.content !== undefined &&
-                            <div dangerouslySetInnerHTML={{ __html: convertCommentFromJSONToHTML(props.content) }}></div>
+                        {
+                            props.content !== undefined &&
+                            <div dangerouslySetInnerHTML={{ __html: props.content }}></div>
+
                         }
                     </div>
                 }

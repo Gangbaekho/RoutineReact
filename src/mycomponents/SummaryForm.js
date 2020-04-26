@@ -4,10 +4,12 @@ import LandingPageHeader from '../components/Headers/LandingPageHeader'
 import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
 
 // for text editor
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs';
+
 const SummaryForm = (props) => {
 
     // create state for register summary
@@ -18,6 +20,7 @@ const SummaryForm = (props) => {
 
     const onEditorStateChange = (editorState) => {
         setContent(editorState)
+        console.log(draftToHtml(convertToRaw(content.getCurrentContent())))
     }
 
 
@@ -28,9 +31,15 @@ const SummaryForm = (props) => {
 
 
         // make summary object for sending server
+        // const summary = {
+        //     title,
+        //     content: JSON.stringify(convertToRaw(content.getCurrentContent())),
+        //     understanding,
+        //     folder
+        // }
         const summary = {
             title,
-            content: JSON.stringify(convertToRaw(content.getCurrentContent())),
+            content: draftToHtml(convertToRaw(content.getCurrentContent())),
             understanding,
             folder
         }
