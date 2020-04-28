@@ -280,7 +280,6 @@ function LandingPage() {
           </Container>
         </div>
         <Container>
-          <MyCard />
           <SummaryContext.Provider value={{ summaries, dispatch }}>
             {
               summaries.map(summary => (

@@ -98,21 +98,20 @@ function IndexNavbar() {
                 <NavLink
                   href="/profile"
                 >
-                  {
-                    // <i className="now-ui-icons arrows-1_cloud-download-93"></i>
-                  }
-
                   <p>Profile</p>
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  href="/folder"
+                >
+                  <p>Folder</p>
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
                   href="/signup"
                 >
-                  {
-                    // <i className="now-ui-icons arrows-1_cloud-download-93"></i>
-                  }
-
                   <p>Sign up</p>
                 </NavLink>
               </NavItem>

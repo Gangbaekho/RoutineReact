@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import LandingPageHeader from '../components/Headers/LandingPageHeader'
 import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
@@ -10,6 +10,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs';
 
+import Creatable from 'react-select/creatable';
+import Select from 'react-select'
+
 const SummaryForm = (props) => {
 
     // create state for register summary
@@ -18,11 +21,24 @@ const SummaryForm = (props) => {
     const [understanding, setUnderstanding] = useState('')
     const [folder, setFolder] = useState('')
 
+    // toggle for selecting folders or creating new folder
+    const [folderToggle, setFolderToggle] = useState(true)
+
+    // all user's folder
+    const folderOptions = JSON.parse(sessionStorage.getItem('folders')).map((folder) => ({
+        value: folder,
+        label: folder
+    }))
+
+    const understandingOptions = [
+        { value: 1, label: "1" },
+        { value: 2, label: "2" },
+        { value: 3, label: "3" }
+    ]
+
     const onEditorStateChange = (editorState) => {
         setContent(editorState)
-        console.log(draftToHtml(convertToRaw(content.getCurrentContent())))
     }
-
 
     const onSubmit = (e) => {
 
@@ -40,9 +56,11 @@ const SummaryForm = (props) => {
         const summary = {
             title,
             content: draftToHtml(convertToRaw(content.getCurrentContent())),
-            understanding,
-            folder
+            understanding: understanding.value,
+            folder: folder.value
         }
+
+        console.log(summary)
 
         axios.post(
             `http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}`,
@@ -63,6 +81,22 @@ const SummaryForm = (props) => {
 
     }
 
+    // get all user's folders name
+    useEffect(() => {
+        if (sessionStorage.getItem('folders') === null) {
+            axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/folders`,
+                {
+                    headers: {
+                        authorization: 'Bearer ' + sessionStorage.getItem('token')
+
+                    }
+                }).then((data) => {
+                    sessionStorage.setItem('folders', JSON.stringify(data.data))
+                    console.log(data.data)
+                }).catch('all users folder name can not be fetched.. failed')
+        }
+    }, [])
+
     return (
         <div>
             <ExamplesNavbar />
@@ -73,13 +107,8 @@ const SummaryForm = (props) => {
                     onInput={(e) => setTitle(e.target.value)} />
                 <br />
                 Understanding
-                <select className="form-control"
-                    onChange={(e) => setUnderstanding(e.target.value)} >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                <br />
+                <Select options={understandingOptions}
+                    onChange={value => setUnderstanding(value)} />
                 <Editor
                     editorState={content}
                     wrapperClassName="demo-wrapper"
@@ -87,9 +116,9 @@ const SummaryForm = (props) => {
                     onEditorStateChange={onEditorStateChange}
                 />
                 <br />
-                Folder <input type="text" name="folder"
-                    placeholder="Folder" className="form-control"
-                    onInput={(e) => setFolder(e.target.value)} />
+                Folder
+                <Creatable options={folderOptions}
+                    onChange={value => setFolder(value)} />
                 <button className="btn btn-success">Submit</button>
             </form>
         </div >

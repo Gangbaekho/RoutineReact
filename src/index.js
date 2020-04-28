@@ -35,6 +35,7 @@ import Repeat from 'mycomponents/Repeat'
 import SignUp from 'views/index-sections/SignUp.js'
 import SummaryForm from './mycomponents/SummaryForm'
 import QuestionForm from './mycomponents/QuestionForm'
+import FolderLandering from './mycomponents/FolderLandering'
 
 const history = createBrowserHistory()
 
@@ -60,6 +61,7 @@ ReactDOM.render(
         <Route path="/signup" component={SignUp} />
         <Route path="/summary/:username/create-summary" component={SummaryForm} exact={true} />
         <Route path="/question/:username/:summaryId" component={QuestionForm} exact={true} />
+        <Route path="/folder" component={FolderLandering} exact={true} />
         <Redirect to="/index" />
         <Redirect from="/" to="/index" />
       </Switch>
