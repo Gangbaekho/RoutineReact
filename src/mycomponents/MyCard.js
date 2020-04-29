@@ -49,6 +49,7 @@ const MyCard = (props) => {
             title: props.title,
             content: props.content,
             understanding,
+            questions: props.questions,
             folder: props.folder,
             createdate: props.createdate
         }
@@ -140,7 +141,7 @@ const MyCard = (props) => {
                 </CardBody>
                 {!toggle &&
                     <div style={{ textAlign: 'left', paddingLeft: '30px' }}>
-                        <CardTitle tag="h4" style={{ paddingTop: '0px' }}>{props.title}</CardTitle>
+                        <CardTitle tag="h4" style={{ paddingTop: '0px', textAlign: 'center', paddingBottom: '30px' }}>{props.title}</CardTitle>
                         {
                             props.content !== undefined &&
                             <div dangerouslySetInnerHTML={{ __html: props.content }}></div>

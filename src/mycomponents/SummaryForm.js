@@ -21,14 +21,8 @@ const SummaryForm = (props) => {
     const [understanding, setUnderstanding] = useState('')
     const [folder, setFolder] = useState('')
 
-    // toggle for selecting folders or creating new folder
-    const [folderToggle, setFolderToggle] = useState(true)
-
     // all user's folder
-    const folderOptions = JSON.parse(sessionStorage.getItem('folders')).map((folder) => ({
-        value: folder,
-        label: folder
-    }))
+    const [folderOptions, setFolderOptions] = useState([])
 
     const understandingOptions = [
         { value: 1, label: "1" },
@@ -83,18 +77,20 @@ const SummaryForm = (props) => {
 
     // get all user's folders name
     useEffect(() => {
-        if (sessionStorage.getItem('folders') === null) {
-            axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/folders`,
-                {
-                    headers: {
-                        authorization: 'Bearer ' + sessionStorage.getItem('token')
+        axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/folders`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + sessionStorage.getItem('token')
 
-                    }
-                }).then((data) => {
-                    sessionStorage.setItem('folders', JSON.stringify(data.data))
-                    console.log(data.data)
-                }).catch('all users folder name can not be fetched.. failed')
-        }
+                }
+            }).then((response) => {
+                setFolderOptions(response.data.map((folder) => ({
+                    value: folder,
+                    label: folder
+                })))
+
+
+            }).catch('all users folder name can not be fetched.. failed')
     }, [])
 
     return (
@@ -114,6 +110,9 @@ const SummaryForm = (props) => {
                     wrapperClassName="demo-wrapper"
                     editorClassName="demo-editor"
                     onEditorStateChange={onEditorStateChange}
+                    localization={{
+                        locale: 'ko',
+                    }}
                 />
                 <br />
                 Folder

@@ -1,45 +1,94 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import LandingPageHeader from '../components/Headers/LandingPageHeader'
 import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
 
-import { NavItem, NavLink, Nav } from 'reactstrap'
+import { Tab, Col, Row, Nav } from 'react-bootstrap'
+import MyCard from './MyCard'
+import axios from 'axios'
+import uuid from 'uuid'
 
 
 const FolderLandering = (props) => {
+
+    const [folderOptions, setFolderOptions] = useState([])
+    const [summaries, setSummaries] = useState([])
+    const [folderSummaries, setFolderSummaries] = useState([])
+    const [targetSummary, setTargetSummary] = useState('')
+
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/folders`,
+            {
+                headers: {
+                    authorization: 'Bearer ' + sessionStorage.getItem('token')
+
+                }
+            }).then((response) => {
+                setFolderOptions(response.data.map((folder) => (folder)))
+
+
+            }).catch('all users folder name can not be fetched.. failed')
+
+        axios.get(`http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}`, {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        }).then((response) => {
+            setSummaries(response.data.reverse())
+        }).catch('can not fetch the summaries')
+    }, [])
+
     return (
         <div>
             <ExamplesNavbar />
             <LandingPageHeader />
-            <Nav className="flex-column">
-                <NavItem>
-                    <NavLink
-                        className="active"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                    >
-                        Active
-          </NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink href="#pablo" onClick={e => e.preventDefault()}>
-                        Link
-          </NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink href="#pablo" onClick={e => e.preventDefault()}>
-                        Link
-          </NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink
-                        className="disabled"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                    >
-                        Disabled
-          </NavLink>
-                </NavItem>
-            </Nav>
+            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                <Row>
+                    <Col sm={2}>
+                        <Nav variant="pills" className="flex-column">
+                            {
+                                folderOptions.map((folder) => (
+                                    <Nav.Item key={uuid()}>
+                                        <Nav.Link
+                                            eventKey={folder}
+                                            onSelect={(e) => setFolderSummaries(
+                                                summaries.filter((summary) => summary.folder === e)
+                                            )}>{folder}</Nav.Link>
+                                    </Nav.Item>
+                                ))
+                            }
+                        </Nav>
+                    </Col>
+                    <Col sm={2}>
+                        <Tab.Content>
+                            <Tab.Pane eventKey="first">
+                                asfasfas
+                            </Tab.Pane>
+                            {
+                                folderOptions.map((folder) => (
+                                    <Tab.Pane key={uuid()} eventKey={folder}>
+                                        {
+                                            folderSummaries !== undefined && folderSummaries.map((summary) => (
+                                                <div key={uuid()} onClick={(e) => setTargetSummary(
+                                                    folderSummaries.find((summary) => summary.title === e.target.innerText)
+                                                )}>
+                                                    {summary.title}
+                                                </div>
+                                            ))
+                                        }
+                                    </Tab.Pane>
+                                ))
+                            }
+                        </Tab.Content>
+                    </Col>
+                    <Col sm={6}>
+                        {
+                            targetSummary !== '' &&
+                            <MyCard {...targetSummary} />
+                        }
+                    </Col>
+                </Row>
+            </Tab.Container>
         </div>
     )
 }
