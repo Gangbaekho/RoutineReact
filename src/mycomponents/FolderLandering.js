@@ -59,29 +59,48 @@ const FolderLandering = (props) => {
                             }
                         </Nav>
                     </Col>
-                    <Col sm={2}>
+                    <Col sm={1}>
                         <Tab.Content>
-                            <Tab.Pane eventKey="first">
-                                asfasfas
-                            </Tab.Pane>
+                            {
+                                // folderOptions.map((folder) => (
+                                //     <Tab.Pane key={uuid()} eventKey={folder}>
+                                //         {
+                                //             folderSummaries !== undefined && folderSummaries.map((summary) => (
+                                //                 <div key={uuid()} onClick={(e) => setTargetSummary(
+                                //                     folderSummaries.find((summary) => summary.title === e.target.innerText)
+                                //                 )}>
+                                //                     {summary.title}
+                                //                 </div>
+                                //             ))
+                                //         }
+                                //     </Tab.Pane>
+                                // ))
+                            }
                             {
                                 folderOptions.map((folder) => (
                                     <Tab.Pane key={uuid()} eventKey={folder}>
-                                        {
-                                            folderSummaries !== undefined && folderSummaries.map((summary) => (
-                                                <div key={uuid()} onClick={(e) => setTargetSummary(
-                                                    folderSummaries.find((summary) => summary.title === e.target.innerText)
-                                                )}>
-                                                    {summary.title}
-                                                </div>
-                                            ))
-                                        }
+                                        <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                                            <Row>
+                                                <Nav variant="pills" className="flex-column">
+                                                    {
+                                                        folderSummaries !== undefined && folderSummaries.map((summary) => (
+                                                            <Nav.Link key={uuid()} onClick={(e) => setTargetSummary(
+                                                                folderSummaries.find((summary) => summary.title === e.target.innerText)
+                                                            )}>
+                                                                {summary.title}
+                                                            </Nav.Link>
+                                                        ))
+                                                    }
+                                                </Nav>
+                                            </Row>
+                                        </Tab.Container>
                                     </Tab.Pane>
                                 ))
                             }
+
                         </Tab.Content>
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={8}>
                         {
                             targetSummary !== '' &&
                             <MyCard {...targetSummary} />
