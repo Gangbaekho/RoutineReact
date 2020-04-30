@@ -1,7 +1,14 @@
 import React, { useState, useContext } from "react";
 import SummaryContext from '../context/summaryContext'
-import { addQuestion } from '../actions/SummaryActions'
+import { addQuestion, updateSummary } from '../actions/SummaryActions'
 import uuid from 'uuid'
+import ReactSearchBox from 'react-search-box'
+
+// for alert
+
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
 // reactstrap components
 import {
     Card,
@@ -27,7 +34,7 @@ import axios from 'axios'
 const MyCard = (props) => {
 
     // for redux hooks
-    const { dispatch } = useContext(SummaryContext)
+    const { summaries, dispatch } = useContext(SummaryContext)
 
     const [toggle, setToggle] = useState(1)
 
@@ -45,6 +52,12 @@ const MyCard = (props) => {
     const [questionTitle, setQuestionTitle] = useState('')
     const [questionContent, setQuestionContent] = useState('')
 
+    // for search box data
+    const [data, setData] = useState(summaries.map((summary => ({
+        key: summary.id,
+        value: summary.title
+    }))))
+
     const handleChangeUnderstanding = (understanding) => {
 
         const newSummary = {
@@ -52,7 +65,38 @@ const MyCard = (props) => {
             title: props.title,
             content: props.content,
             understanding,
+            related: props.related,
             questions: props.questions,
+            folder: props.folder,
+            createdate: props.createdate
+        }
+
+        axios.put(
+            `http://localhost:8080/summary/${sessionStorage.getItem('authenticatedUser')}/${props.id}`,
+            newSummary,
+            {
+                headers: {
+                    authorization: 'Bearer ' + sessionStorage.getItem('token')
+
+                }
+            }).then(() => {
+                console.log('summary modify success')
+                dispatch(updateSummary(newSummary))
+            })
+            .catch('summary modify failed')
+    }
+
+    const handleRelateSummary = (relatedSummaryId) => {
+
+        const relatedSummary = summaries.find((summary) => summary.id === relatedSummaryId)
+
+        const newSummary = {
+            id: props.id,
+            title: props.title,
+            content: props.content,
+            understanding: props.understanding,
+            questions: props.questions,
+            related: [...props.related, relatedSummary],
             folder: props.folder,
             createdate: props.createdate
         }
@@ -97,7 +141,6 @@ const MyCard = (props) => {
             })
             .catch('question form send failed')
     }
-
 
     return (
         < div >
@@ -184,6 +227,12 @@ const MyCard = (props) => {
                             <button className="btn btn-success">Submit</button>
                         </form>
                     }
+                    {toggle === 4 &&
+                        <ReactSearchBox
+                            placeholder="Search the title."
+                            data={data}
+                            onSelect={record => handleRelateSummary(record.key)}
+                        />}
                 </CardBody>
                 {toggle === 2 &&
                     <div style={{ textAlign: 'left', paddingLeft: '30px' }}>

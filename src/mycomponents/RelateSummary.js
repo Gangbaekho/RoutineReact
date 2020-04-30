@@ -4,7 +4,6 @@ import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
 import ReactSearchBox from 'react-search-box'
 
 import axios from 'axios'
-import uuid from 'uuid'
 
 const RelateSummary = (props) => {
 
@@ -31,7 +30,7 @@ const RelateSummary = (props) => {
             <ExamplesNavbar />
             <LandingPageHeader />
             <ReactSearchBox
-                placeholder="Placeholder"
+                placeholder="Search the title."
                 value="Doe"
                 data={data}
                 onSelect={record => console.log(record)}

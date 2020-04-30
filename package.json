@@ -56,6 +56,8 @@
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
     "react": "16.8.6",
+    "react-alert": "^7.0.0",
+    "react-alert-template-basic": "^1.0.0",
     "react-app-polyfill": "^1.0.1",
     "react-bootstrap": "^1.0.1",
     "react-bootstrap-switch": "15.5.3",

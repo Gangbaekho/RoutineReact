@@ -14,7 +14,7 @@ const summaryReducer = (state = [], action) => {
 
             const filteredState = state.filter((summary) => summary.id !== action.summary.id)
 
-            filteredState.splice(indexSummaryForUpdate, 1, action.summary)
+            filteredState.splice(indexSummaryForUpdate, 0, action.summary)
 
             return filteredState
 
@@ -33,8 +33,8 @@ const summaryReducer = (state = [], action) => {
             const newSummary = {
                 ...targetSummary,
                 questions: [
+                    ...targetSummary.questions,
                     action.question
-                    , ...targetSummary.questions
                 ]
             }
 
