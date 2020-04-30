@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import SummaryContext from '../context/summaryContext'
+import { addQuestion } from '../actions/SummaryActions'
+import uuid from 'uuid'
 // reactstrap components
 import {
     Card,
@@ -19,14 +22,14 @@ import {
     Alert
 } from "reactstrap";
 import axios from 'axios'
-import { stateToHTML } from 'draft-js-export-html';
-import { convertFromRaw, convertToRaw } from 'draft-js'
-import draftToHtml from 'draftjs-to-html';
-import convert from 'htmr';
+
 
 const MyCard = (props) => {
 
-    const [toggle, setToggle] = useState(true)
+    // for redux hooks
+    const { dispatch } = useContext(SummaryContext)
+
+    const [toggle, setToggle] = useState(1)
 
     //for collapse
     const [collapses, setCollapses] = React.useState([]);
@@ -38,9 +41,9 @@ const MyCard = (props) => {
         }
     };
 
-    // convert JSON to Html
-    const convertCommentFromJSONToHTML = (text) => { return stateToHTML(convertFromRaw(JSON.parse(text))) }
-
+    // for question form
+    const [questionTitle, setQuestionTitle] = useState('')
+    const [questionContent, setQuestionContent] = useState('')
 
     const handleChangeUnderstanding = (understanding) => {
 
@@ -68,11 +71,40 @@ const MyCard = (props) => {
             .catch('summary modify failed')
     }
 
+    const handleQuestionForm = (e) => {
+        e.preventDefault()
+
+        const question = {
+            title: questionTitle,
+            content: questionContent
+        }
+
+        axios.post(
+            `http://localhost:8080/question/${sessionStorage.getItem('authenticatedUser')}/${props.id}`,
+            question,
+            {
+                headers: {
+                    authorization: 'Bearer ' + sessionStorage.getItem('token')
+
+                }
+            }).then(() => {
+                console.log('question submit sccess')
+                dispatch(addQuestion(props.id, {
+                    id: uuid(),
+                    title: questionTitle,
+                    content: questionContent
+                }))
+            })
+            .catch('question form send failed')
+    }
+
 
     return (
         < div >
-            <Card className="text-center">
-                <Alert color={props.understanding !== 1 ? props.understanding === 2 ? 'warning' : 'success' : 'danger'}>
+            <Card>
+                <Alert
+                    className="text-center"
+                    color={props.understanding !== 1 ? props.understanding === 2 ? 'warning' : 'success' : 'danger'}>
                     <UncontrolledDropdown className="btn-group">
                         <DropdownToggle
                             aria-expanded={false}
@@ -99,16 +131,18 @@ const MyCard = (props) => {
                         </DropdownMenu>
                     </UncontrolledDropdown>
                 </Alert>
-                <CardHeader>
-                    <Button color="primary" size="sm"
-                        onClick={() => setToggle(true)}>Questions</Button>
-                    <Button color="primary" size="sm"
-                        onClick={() => setToggle(false)}>Summary</Button>
-                    <Button color="primary" size="sm"
-                        href={`/question/${sessionStorage.getItem('authenticatedUser')}/${props.id}`}>Create Question</Button>
+                <CardHeader className="text-center">
+                    <Button className="button-color" color="primary" size="sm"
+                        onClick={() => setToggle(1)}>Questions</Button>
+                    <Button className="button-color" color="primary" size="sm"
+                        onClick={() => setToggle(2)}>Summary</Button>
+                    <Button className="button-color" color="primary" size="sm"
+                        onClick={() => setToggle(3)}>Create Question</Button>
+                    <Button className="button-color" color="primary" size="sm"
+                        onClick={() => setToggle(4)}>Relate Summary</Button>
                 </CardHeader>
-                <CardBody>
-                    {toggle && props.questions !== undefined &&
+                <CardBody className="text-center">
+                    {toggle === 1 && props.questions !== undefined &&
                         props.questions.map((question, index) =>
                             (
                                 <div key={question.id}>
@@ -138,14 +172,25 @@ const MyCard = (props) => {
                                     <br />
                                 </div>
                             ))}
+                    {toggle === 3 &&
+                        <form onSubmit={handleQuestionForm} className="text-left">
+                            Title <input type="text" name="title"
+                                placeholder="Title" className="form-control"
+                                onInput={(e) => setQuestionTitle(e.target.value)} />
+                            <br />
+                            Content <textarea
+                                placeholder="Content" className="form-control"
+                                onInput={(e) => setQuestionContent(e.target.value)} />
+                            <button className="btn btn-success">Submit</button>
+                        </form>
+                    }
                 </CardBody>
-                {!toggle &&
+                {toggle === 2 &&
                     <div style={{ textAlign: 'left', paddingLeft: '30px' }}>
                         <CardTitle tag="h4" style={{ paddingTop: '0px', textAlign: 'center', paddingBottom: '30px' }}>{props.title}</CardTitle>
                         {
                             props.content !== undefined &&
                             <div dangerouslySetInnerHTML={{ __html: props.content }}></div>
-
                         }
                     </div>
                 }

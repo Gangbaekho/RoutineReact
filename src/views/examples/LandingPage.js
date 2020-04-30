@@ -18,8 +18,6 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 import summaryReducer from '../../reducers/SummaryReducer'
-import summaryContext from '../../context/summaryContext'
-import summaryService from '../../api/SummaryService'
 import { getSummaries } from '../../actions/SummaryActions'
 import axios from 'axios'
 import uuid from 'uuid'

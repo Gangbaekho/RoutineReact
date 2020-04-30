@@ -41,6 +41,7 @@ import SignUp from 'views/index-sections/SignUp.js'
 import SummaryForm from './mycomponents/SummaryForm'
 import QuestionForm from './mycomponents/QuestionForm'
 import FolderLandering from './mycomponents/FolderLandering'
+import RelateSummary from './mycomponents/RelateSummary'
 
 const history = createBrowserHistory()
 
@@ -67,6 +68,7 @@ ReactDOM.render(
         <Route path="/summary/:username/create-summary" component={SummaryForm} exact={true} />
         <Route path="/question/:username/:summaryId" component={QuestionForm} exact={true} />
         <Route path="/folder" component={FolderLandering} exact={true} />
+        <Route path="/summary/:username/relate-summary/:summaryId" component={RelateSummary} exact={true} />
         <Redirect to="/index" />
         <Redirect from="/" to="/index" />
       </Switch>

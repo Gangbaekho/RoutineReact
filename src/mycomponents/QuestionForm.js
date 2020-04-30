@@ -26,7 +26,6 @@ const QuestionForm = (props) => {
                 props.history.push('/repeat')
             })
             .catch('question form send failed')
-
     }
 
     return (
