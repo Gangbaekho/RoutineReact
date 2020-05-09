@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import LandingPageHeader from '../components/Headers/LandingPageHeader'
 import ExamplesNavbar from '../components/Navbars/ExamplesNavbar'
 
@@ -6,12 +6,16 @@ import { Tab, Col, Row, Nav } from 'react-bootstrap'
 import MyCard from './MyCard'
 import axios from 'axios'
 import uuid from 'uuid'
+import summaryReducer from '../reducers/SummaryReducer'
+import SummaryContext from '../context/summaryContext'
+import { getSummaries } from '../actions/SummaryActions'
+
 
 
 const FolderLandering = (props) => {
 
     const [folderOptions, setFolderOptions] = useState([])
-    const [summaries, setSummaries] = useState([])
+    const [summaries, dispatch] = useReducer(summaryReducer, [])
     const [folderSummaries, setFolderSummaries] = useState([])
     const [targetSummary, setTargetSummary] = useState('')
 
@@ -33,9 +37,8 @@ const FolderLandering = (props) => {
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             }
-        }).then((response) => {
-            setSummaries(response.data.reverse())
-        }).catch('can not fetch the summaries')
+        }).then((data) => dispatch(getSummaries(data.data.reverse())))
+            .catch((error) => console.log(error))
     }, [])
 
     return (
@@ -101,10 +104,11 @@ const FolderLandering = (props) => {
                         </Tab.Content>
                     </Col>
                     <Col sm={8}>
-                        {
-                            targetSummary !== '' &&
-                            <MyCard {...targetSummary} />
-                        }
+                        <SummaryContext.Provider value={{ summaries, dispatch }}>
+                            {
+                                targetSummary !== '' && <MyCard {...targetSummary} />
+                            }
+                        </SummaryContext.Provider>
                     </Col>
                 </Row>
             </Tab.Container>

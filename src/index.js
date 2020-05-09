@@ -42,6 +42,7 @@ import SummaryForm from './mycomponents/SummaryForm'
 import QuestionForm from './mycomponents/QuestionForm'
 import FolderLandering from './mycomponents/FolderLandering'
 import RelateSummary from './mycomponents/RelateSummary'
+import FilteredSummary from './mycomponents/FilteredSummary'
 
 const history = createBrowserHistory()
 
@@ -69,6 +70,7 @@ ReactDOM.render(
         <Route path="/question/:username/:summaryId" component={QuestionForm} exact={true} />
         <Route path="/folder" component={FolderLandering} exact={true} />
         <Route path="/summary/:username/relate-summary/:summaryId" component={RelateSummary} exact={true} />
+        <Route path="/summary/:username/routine" component={FilteredSummary} exact />
         <Redirect to="/index" />
         <Redirect from="/" to="/index" />
       </Switch>

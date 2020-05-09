@@ -4,11 +4,6 @@ import { addQuestion, updateSummary } from '../actions/SummaryActions'
 import uuid from 'uuid'
 import ReactSearchBox from 'react-search-box'
 
-// for alert
-
-import { positions, Provider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
-
 // reactstrap components
 import {
     Card,
@@ -26,7 +21,11 @@ import {
     DropdownMenu,
     DropdownItem,
     UncontrolledDropdown,
-    Alert
+    Alert,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
 } from "reactstrap";
 import axios from 'axios'
 
@@ -38,13 +37,23 @@ const MyCard = (props) => {
 
     const [toggle, setToggle] = useState(1)
 
-    //for collapse
+    // for question collapse
     const [collapses, setCollapses] = React.useState([]);
     const changeCollapse = collapse => {
         if (collapses.includes(collapse)) {
             setCollapses(collapses.filter(prop => prop !== collapse));
         } else {
             setCollapses([...collapses, collapse]);
+        }
+    };
+
+    // for related summary collapse
+    const [collapses2, setCollapses2] = useState([])
+    const changeCollapse2 = collapse => {
+        if (collapses2.includes(collapse)) {
+            setCollapses2(collapses2.filter(prop => prop !== collapse));
+        } else {
+            setCollapses2([...collapses2, collapse]);
         }
     };
 
@@ -57,6 +66,12 @@ const MyCard = (props) => {
         key: summary.id,
         value: summary.title
     }))))
+
+    // for modal toggle
+    const [modalToggle, setModalToggle] = useState(false)
+
+    const handleModalToggle = () => setModalToggle(!modalToggle)
+
 
     const handleChangeUnderstanding = (understanding) => {
 
@@ -111,6 +126,9 @@ const MyCard = (props) => {
                 }
             }).then(() => {
                 console.log('summary modify success')
+                setModalToggle(!modalToggle)
+                dispatch(updateSummary(newSummary))
+
             })
             .catch('summary modify failed')
     }
@@ -147,7 +165,7 @@ const MyCard = (props) => {
             <Card>
                 <Alert
                     className="text-center"
-                    color={props.understanding !== 1 ? props.understanding === 2 ? 'warning' : 'success' : 'danger'}>
+                    color="primary">
                     <UncontrolledDropdown className="btn-group">
                         <DropdownToggle
                             aria-expanded={false}
@@ -170,7 +188,6 @@ const MyCard = (props) => {
                             <DropdownItem href="#pablo" onClick={e => handleChangeUnderstanding(3)}>
                                 Success
                             </DropdownItem>
-                            <DropdownItem divider />
                         </DropdownMenu>
                     </UncontrolledDropdown>
                 </Alert>
@@ -228,11 +245,43 @@ const MyCard = (props) => {
                         </form>
                     }
                     {toggle === 4 &&
-                        <ReactSearchBox
-                            placeholder="Search the title."
-                            data={data}
-                            onSelect={record => handleRelateSummary(record.key)}
-                        />}
+                        <div>
+                            {props.related !== undefined &&
+                                props.related.map((summary, index) => (
+                                    <div key={uuid()}>
+                                        <CardHeader className="card-collapse" id="headingOne" role="tab">
+                                            <h5 className="mb-0 panel-title">
+                                                <a
+                                                    aria-expanded={collapses2.includes(index + 1)}
+                                                    className="collapsed"
+                                                    data-parent="#accordion"
+                                                    href="#pablo"
+                                                    id="collapseOne"
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        changeCollapse2(index + 1);
+                                                    }}
+                                                >
+                                                    {summary.title}{" "}
+                                                    <i className="nc-icon nc-minimal-down" />
+                                                </a>
+                                            </h5>
+                                        </CardHeader>
+                                        <Collapse isOpen={collapses2.includes(index + 1)}>
+                                            <CardBody>
+                                                {summary.content}
+                                            </CardBody>
+                                        </Collapse>
+                                        <br />
+                                    </div>
+                                ))}
+                            <ReactSearchBox
+                                placeholder="Search the title."
+                                data={data}
+                                onSelect={record => handleRelateSummary(record.key)}
+                            />
+                        </div>
+                    }
                 </CardBody>
                 {toggle === 2 &&
                     <div style={{ textAlign: 'left', paddingLeft: '30px' }}>
@@ -244,6 +293,16 @@ const MyCard = (props) => {
                     </div>
                 }
             </Card>
+            <Modal isOpen={modalToggle} toggle={handleModalToggle} >
+                <ModalHeader toggle={handleModalToggle}>Success</ModalHeader>
+                <ModalBody>
+                    This summary is related successfully
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={handleModalToggle}>Do Something</Button>{' '}
+                    <Button color="secondary" onClick={handleModalToggle}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
         </div >
     )
 }
